@@ -1,0 +1,37 @@
+.App {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+input {
+  padding: 10px;
+  width: 300px;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.country-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.countryCard {
+  width: 150px;
+  text-align: center;
+  border: 1px solid #ddd;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.countryCard img {
+  width: 100px;
+  height: auto;
+}
+
+.countryCard p {
+  margin-top: 10px;
+  font-size: 14px;
+}
