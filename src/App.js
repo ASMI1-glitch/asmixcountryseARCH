@@ -11,7 +11,7 @@ function App() {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await fetch("countries-search-data-prod-812920491762.asia-south1.run.app/countries");
+        const response = await fetch("https://restcountries.com/v3.1/all");
         const data = await response.json();
         setCountries(data);
         setFilteredCountries(data); // Set filtered countries to show all initially
