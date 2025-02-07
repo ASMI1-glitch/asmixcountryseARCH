@@ -1,57 +1,43 @@
+import { useEffect, useState } from "react";
 import "./styles.css";
 
-import React, { useEffect, useState } from "react";
+const API_URL = "https://countries-search-data-prod-812920491762.asia-south1.run.app/countries";
 
 function App() {
   const [countries, setCountries] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredCountries, setFilteredCountries] = useState([]);
 
-  // Fetch country data on initial render
   useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const response = await fetch("https://countries-search-data-prod-812920491762.asia-south1.run.app/countries");
-        const data = await response.json();
-        setCountries(data);
-        setFilteredCountries(data); // Set filtered countries to show all initially
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchCountries();
+    fetch(API_URL)
+      .then((response) => response.json())
+      .then((data) => setCountries(data))
+      .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  // Handle search input
-  const handleSearch = (event) => {
-    const searchValue = event.target.value.toLowerCase();
-    setSearchTerm(searchValue);
-
-    const filtered = countries.filter((country) =>
-      country.name.common.toLowerCase().includes(searchValue)
-    );
-    setFilteredCountries(filtered);
-  };
+  const filteredCountries = countries.filter((country) =>
+    country.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="App">
-      <h1>Country Search</h1>
+    <div className="container">
       <input
         type="text"
-        placeholder="Search for a country"
+        placeholder="Search for a country..."
         value={searchTerm}
-        onChange={handleSearch}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="search-bar"
       />
-      <div className="country-grid">
-        {filteredCountries.map((country) => (
-          <div className="countryCard" key={country.cca3}>
-            <img
-              src={country.flags.png}
-              alt={`Flag of ${country.name.common}`}
-            />
-            <p>{country.name.common}</p>
-          </div>
-        ))}
+      <div className="countries-grid">
+        {filteredCountries.length > 0 ? (
+          filteredCountries.map((country) => (
+            <div key={country.code} className="countryCard">
+              <img src={country.flag} alt={country.name} />
+              <p>{country.name}</p>
+            </div>
+          ))
+        ) : (
+          <p className="no-results">No countries found</p>
+        )}
       </div>
     </div>
   );
