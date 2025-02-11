@@ -1,30 +1,37 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles.css";
 
 const API_URL = "https://countries-search-data-prod-812920491762.asia-south1.run.app/countries";
 
-function App() {
+export default function App() {
   const [countries, setCountries] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [search, setSearch] = useState("");
+  const [filteredCountries, setFilteredCountries] = useState([]);
 
   useEffect(() => {
     fetch(API_URL)
       .then((response) => response.json())
-      .then((data) => setCountries(data))
+      .then((data) => {
+        setCountries(data);
+        setFilteredCountries(data);
+      })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  const filteredCountries = countries.filter((country) =>
-    country.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    const results = countries.filter((country) =>
+      country.name.toLowerCase().includes(search.toLowerCase())
+    );
+    setFilteredCountries(results);
+  }, [search, countries]);
 
   return (
     <div className="container">
       <input
         type="text"
         placeholder="Search for a country..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
         className="search-bar"
       />
       <div className="countries-grid">
@@ -36,11 +43,9 @@ function App() {
             </div>
           ))
         ) : (
-          <p className="no-results">No countries found</p>
+          <p>No countries found</p>
         )}
       </div>
     </div>
   );
 }
-
-export default App;
