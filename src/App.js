@@ -1,51 +1,56 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles.css";
 
-const API_URL = "https://countries-search-data-prod-812920491762.asia-south1.run.app/countries";
+const API_URL =
+  "https://countries-search-data-prod-812920491762.asia-south1.run.app/countries";
 
-export default function App() {
+const CountrySearchApp = () => {
   const [countries, setCountries] = useState([]);
-  const [search, setSearch] = useState("");
-  const [filteredCountries, setFilteredCountries] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetch(API_URL)
-      .then((response) => response.json())
-      .then((data) => {
-        setCountries(data);
-        setFilteredCountries(data);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
+    fetchCountries();
   }, []);
 
-  useEffect(() => {
-    const results = countries.filter((country) =>
-      country.name.toLowerCase().includes(search.toLowerCase())
-    );
-    setFilteredCountries(results);
-  }, [search, countries]);
+  const fetchCountries = async () => {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setCountries(data);
+    } catch (error) {
+      console.error("Error fetching countries:", error);
+    }
+  };
+
+  const filteredCountries = countries.filter((country) =>
+    country.common.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="container">
+    <div className="app-container">
       <input
         type="text"
         placeholder="Search for a country..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="search-bar"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <div className="countries-grid">
+      <div className="countries-container">
         {filteredCountries.length > 0 ? (
           filteredCountries.map((country) => (
             <div key={country.code} className="countryCard">
-              <img src={country.flag} alt={country.name} />
-              <p>{country.name}</p>
+              <img src={country.png} alt={`${country.common} flag`} />
+              <h2>{country.name}</h2>
             </div>
           ))
         ) : (
-          <p>No countries found</p>
+          <p>No matching countries found.</p>
         )}
       </div>
     </div>
   );
-}
+};
+
+export default CountrySearchApp;
