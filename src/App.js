@@ -4,7 +4,7 @@ import "./styles.css";
 const API_URL =
   "https://countries-search-data-prod-812920491762.asia-south1.run.app/countries";
 
-const CountrySearchApp = () => {
+const App = () => {
   const [countries, setCountries] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -53,4 +53,4 @@ const CountrySearchApp = () => {
   );
 };
 
-export default CountrySearchApp;
+export default App;
